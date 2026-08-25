@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#152d27" />
+    <title>Gambito — Ajedrez contra la máquina</title>
+    <meta
+      name="description"
+      content="Juega una partida de ajedrez contra un rival virtual y elige tu color y nivel de dificultad."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Playfair+Display:ital,wght@0,600;1,600&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="ambient ambient-one" aria-hidden="true"></div>
+    <div class="ambient ambient-two" aria-hidden="true"></div>
+
+    <header class="site-header">
+      <a class="brand" href="#" aria-label="Gambito, inicio">
+        <span class="brand-mark" aria-hidden="true">♞</span>
+        <span>Gambito</span>
+      </a>
+      <div class="header-meta">
+        <span class="status-light" aria-hidden="true"></span>
+        Partida local
+      </div>
+    </header>
+
+    <main>
+      <section id="setupScreen" class="setup-screen" aria-labelledby="setupTitle">
+        <div class="setup-copy">
+          <p class="eyebrow">Ajedrez contra la máquina</p>
+          <h1 id="setupTitle">Tu próxima gran<br /><em>jugada</em> empieza aquí.</h1>
+          <p class="intro">
+            Elige tu bando, ajusta el desafío y siéntate frente al tablero.
+            Tu rival ya está preparado.
+          </p>
+          <div class="feature-row" aria-label="Características">
+            <span><b>01</b> Sin registro</span>
+            <span><b>02</b> Tres niveles</span>
+            <span><b>03</b> Reglas completas</span>
+          </div>
+        </div>
+
+        <form id="gameSetup" class="setup-card">
+          <div class="card-heading">
+            <span class="step-number">01</span>
+            <div>
+              <h2>Elige tu color</h2>
+              <p>Las blancas realizan el primer movimiento.</p>
+            </div>
+          </div>
+
+          <div class="color-options" role="radiogroup" aria-label="Elige tu color">
+            <label class="color-option is-selected">
+              <input type="radio" name="playerColor" value="w" checked />
+              <span class="piece-preview white-piece" aria-hidden="true">♔</span>
+              <span class="option-copy"><strong>Blancas</strong><small>Juegas primero</small></span>
+              <span class="radio-mark" aria-hidden="true"></span>
+            </label>
+            <label class="color-option">
+              <input type="radio" name="playerColor" value="b" />
+              <span class="piece-preview black-piece" aria-hidden="true">♚</span>
+              <span class="option-copy"><strong>Negras</strong><small>El bot abre la partida</small></span>
+              <span class="radio-mark" aria-hidden="true"></span>
+            </label>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="card-heading compact">
+            <span class="step-number">02</span>
+            <div>
+              <h2>Nivel del rival</h2>
+              <p>Puedes cambiarlo en la próxima partida.</p>
+            </div>
+          </div>
+
+          <div class="difficulty-options" role="radiogroup" aria-label="Nivel del rival">
+            <label class="difficulty-option">
+              <input type="radio" name="difficulty" value="basic" />
+              <span class="level-icon" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span><strong>Básico</strong><small>Para empezar</small></span>
+              <span class="check-mark" aria-hidden="true">✓</span>
+            </label>
+            <label class="difficulty-option is-selected">
+              <input type="radio" name="difficulty" value="intermediate" checked />
+              <span class="level-icon medium" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span><strong>Intermedio</strong><small>Un reto equilibrado</small></span>
+              <span class="check-mark" aria-hidden="true">✓</span>
+            </label>
+            <label class="difficulty-option">
+              <input type="radio" name="difficulty" value="advanced" />
+              <span class="level-icon hard" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span><strong>Avanzado</strong><small>Piensa cada jugada</small></span>
+              <span class="check-mark" aria-hidden="true">✓</span>
+            </label>
+          </div>
+
+          <button class="primary-button" type="submit">
+            <span>Comenzar partida</span>
+            <span class="button-arrow" aria-hidden="true">→</span>
+          </button>
+          <p class="shortcut-hint">Pulsa <kbd>Enter</kbd> para comenzar</p>
+        </form>
+      </section>
+
+      <section id="gameScreen" class="game-screen" aria-label="Partida de ajedrez" hidden>
+        <div class="game-topbar">
+          <div>
+            <p class="eyebrow">Partida en curso</p>
+            <h1>Mesa <em>Gambito</em></h1>
+          </div>
+          <button id="newGameButton" class="secondary-button" type="button">
+            <span aria-hidden="true">↻</span> Nueva partida
+          </button>
+        </div>
+
+        <div class="game-layout">
+          <div class="board-column">
+            <div id="opponentBar" class="player-bar">
+              <div class="avatar bot-avatar" aria-hidden="true">♞</div>
+              <div class="player-copy">
+                <div class="player-name-line">
+                  <strong>Máquina</strong>
+                  <span id="levelBadge" class="level-badge">Intermedio</span>
+                </div>
+                <span id="botCaptured" class="captured-pieces" aria-label="Piezas capturadas"></span>
+              </div>
+              <div id="botThinking" class="thinking" aria-label="La máquina está pensando" hidden>
+                <i></i><i></i><i></i>
+              </div>
+            </div>
+
+            <div class="board-frame">
+              <div id="chessboard" class="chessboard" role="grid" aria-label="Tablero de ajedrez"></div>
+              <div id="promotionPicker" class="promotion-picker" hidden aria-label="Elige una pieza para la promoción"></div>
+            </div>
+
+            <div id="playerBar" class="player-bar active-player">
+              <div class="avatar user-avatar" aria-hidden="true">TÚ</div>
+              <div class="player-copy">
+                <div class="player-name-line">
+                  <strong>Tú</strong>
+                  <span id="colorLabel" class="subtle-label">Blancas</span>
+                </div>
+                <span id="playerCaptured" class="captured-pieces" aria-label="Piezas capturadas"></span>
+              </div>
+              <span class="turn-marker">Tu turno</span>
+            </div>
+          </div>
+
+          <aside class="game-panel">
+            <div class="status-card">
+              <span id="statusIcon" class="status-icon" aria-hidden="true">♟</span>
+              <div>
+                <p>Estado de la partida</p>
+                <h2 id="gameStatus" aria-live="polite">Tu turno</h2>
+              </div>
+            </div>
+
+            <div class="history-section">
+              <div class="panel-title">
+                <h3>Movimientos</h3>
+                <span id="moveCount">0 jugadas</span>
+              </div>
+              <div class="move-table-head" aria-hidden="true">
+                <span>#</span><span>Blancas</span><span>Negras</span>
+              </div>
+              <div id="moveHistory" class="move-history">
+                <div class="empty-history">
+                  <span aria-hidden="true">♙</span>
+                  <p>La partida está por comenzar.</p>
+                </div>
+              </div>
+              <div class="replay-controls" aria-label="Navegar por las jugadas">
+                <button id="historyBackButton" type="button" aria-label="Ver la jugada anterior" title="Jugada anterior">←</button>
+                <span id="historyPosition" aria-live="polite">Posición actual</span>
+                <button id="historyForwardButton" type="button" aria-label="Ver la jugada siguiente" title="Jugada siguiente">→</button>
+              </div>
+            </div>
+
+            <div class="panel-actions">
+              <button id="undoButton" class="text-button" type="button" disabled>
+                <span aria-hidden="true">↶</span> Deshacer turno
+              </button>
+              <button id="flipButton" class="icon-button" type="button" aria-label="Girar tablero" title="Girar tablero">⇅</button>
+            </div>
+            <p class="board-tip"><span aria-hidden="true">✦</span> Selecciona una pieza para ver sus movimientos legales.</p>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <div id="resultModal" class="modal-backdrop" hidden>
+      <div class="result-modal" role="dialog" aria-modal="true" aria-labelledby="resultTitle">
+        <span id="resultPiece" class="result-piece" aria-hidden="true">♛</span>
+        <p class="eyebrow">Fin de la partida</p>
+        <h2 id="resultTitle">¡Victoria!</h2>
+        <p id="resultText">Has dado jaque mate a la máquina.</p>
+        <div class="result-actions">
+          <button id="playAgainButton" class="primary-button" type="button"><span>Jugar de nuevo</span><span>→</span></button>
+          <button id="closeResultButton" class="text-button" type="button">Revisar tablero</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
